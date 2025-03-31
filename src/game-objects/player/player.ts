@@ -1,3 +1,4 @@
+import { PLAYER_ANIMATION_KEYS } from '../../common/assets';
 import { Position } from '../../common/types';
 export type PlayerConfig = {
   scene: Phaser.Scene;
@@ -14,5 +15,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
+
+    this.play({ key: PLAYER_ANIMATION_KEYS.IDLE_DOWN, repeat: -1 }); // -1 to repeat indefinitly
   }
 }
