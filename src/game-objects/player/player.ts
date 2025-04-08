@@ -36,6 +36,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
   update(): void {
     const controls = this.#controlsComponent.controls;
+
     if (controls.isUpDown) {
       this.play({ key: PLAYER_ANIMATION_KEYS.WALK_UP, repeat: -1 }, true);
       this.#updateVelocity(false, -1);
@@ -62,6 +63,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       }
     } else {
       this.#updateVelocity(true, 0);
+    }
+
+    if (!controls.isDownDown && !controls.isUpDown && !controls.isLeftDown && !controls.isRightDown) {
+      this.play({ key: PLAYER_ANIMATION_KEYS.IDLE_DOWN, repeat: -1 }, true);
     }
   }
 
