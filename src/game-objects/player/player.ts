@@ -1,5 +1,6 @@
 import { PLAYER_ANIMATION_KEYS } from '../../common/assets';
 import { Position } from '../../common/types';
+import { isArcadePhysicsBody } from '../../common/utils';
 import { ControlsComponent } from '../../components/game-object/controls-component';
 import { InputComponent } from '../../components/input/input-component';
 export type PlayerConfig = {
@@ -51,10 +52,13 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
 
   #updateVelocity(isX: boolean, value: number): void {
-    if (isX) {
-      this.body?.velocity.x = value;
+    if (!isArcadePhysicsBody(this.body)) {
       return;
     }
-    this.body?.velocity.y = value;
+    if (isX) {
+      this.body.velocity.x = value;
+      return;
+    }
+    this.body.velocity.y = value;
   }
 }
