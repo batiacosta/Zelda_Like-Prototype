@@ -46,14 +46,20 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.#updateVelocity(false, 0);
     }
 
+    const isMovingVertically = controls.isDownDown || controls.isUpDown;
+
     if (controls.isLeftDown) {
       this.setFlipX(true);
-      this.play({ key: PLAYER_ANIMATION_KEYS.WALK_SIDE, repeat: -1 }, true);
       this.#updateVelocity(true, -1);
+      if (!isMovingVertically) {
+        this.play({ key: PLAYER_ANIMATION_KEYS.WALK_SIDE, repeat: -1 }, true);
+      }
     } else if (controls.isRightDown) {
       this.setFlipX(false);
-      this.play({ key: PLAYER_ANIMATION_KEYS.WALK_SIDE, repeat: -1 }, true);
       this.#updateVelocity(true, 1);
+      if (!isMovingVertically) {
+        this.play({ key: PLAYER_ANIMATION_KEYS.WALK_SIDE, repeat: -1 }, true);
+      }
     } else {
       this.#updateVelocity(true, 0);
     }
