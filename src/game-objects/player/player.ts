@@ -49,4 +49,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       this.play({ key: PLAYER_ANIMATION_KEYS.IDLE_SIDE, repeat: -1 }, true);
     }
   }
+
+  #updateVelocity(isX: boolean, value: number): void {
+    if (isX) {
+      this.body?.velocity.x = value;
+      return;
+    }
+    this.body?.velocity.y = value;
+  }
 }
