@@ -13,6 +13,7 @@ export type PlayerConfig = {
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
   #controlsComponent: ControlsComponent;
+  #speed = 80;
   constructor(config: PlayerConfig) {
     const { scene, position, assetKey, frame } = config;
     const { x, y } = position;
@@ -68,6 +69,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     if (!controls.isDownDown && !controls.isUpDown && !controls.isLeftDown && !controls.isRightDown) {
       this.play({ key: PLAYER_ANIMATION_KEYS.IDLE_DOWN, repeat: -1 }, true);
     }
+
+    this.#normalizeVelocity();
   }
 
   #updateVelocity(isX: boolean, value: number): void {
@@ -75,9 +78,15 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
       return;
     }
     if (isX) {
-      this.body.velocity.x = value * 80;
+      this.body.velocity.x = value;
       return;
     }
-    this.body.velocity.y = value * 80;
+    this.body.velocity.y = value;
+  }
+
+  #normalizeVelocity(): void {
+    if (!isArcadePhysicsBody(this.body)) return;
+
+    this.body.velocity.normalize().scale(this.#speed);
   }
 }
