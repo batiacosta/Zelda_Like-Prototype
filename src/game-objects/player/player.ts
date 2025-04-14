@@ -1,5 +1,7 @@
+import { PLAYER_ANIMATION_KEYS } from '../../common/assets';
 import { Direction, Position } from '../../common/types';
 import { PLAYER_SPEED } from '../../components/config';
+import { AnimationComponent, AnimationConfig } from '../../components/game-object/animation-component';
 import { ControlsComponent } from '../../components/game-object/controls-component';
 import { DirectionSomponent as DirectionComponent } from '../../components/game-object/direction_component';
 import { SpeedComponent } from '../../components/game-object/speed-component';
@@ -21,10 +23,22 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   #stateMachine: StateMachine;
   #speedComponent: SpeedComponent;
   #directionComponent: DirectionComponent;
+  #animationComponent: AnimationComponent;
 
   constructor(config: PlayerConfig) {
     const { scene, position, assetKey, frame } = config;
     const { x, y } = position;
+    const animationConfig: AnimationConfig = {
+      WALK_DOWN: { key: PLAYER_ANIMATION_KEYS.WALK_DOWN, repeat: -1, ignoreIfPlaying: true },
+      WALK_UP: { key: PLAYER_ANIMATION_KEYS.WALK_UP, repeat: -1, ignoreIfPlaying: true },
+      WALK_LEFT: { key: PLAYER_ANIMATION_KEYS.WALK_SIDE, repeat: -1, ignoreIfPlaying: true },
+      WALK_RIGHT: { key: PLAYER_ANIMATION_KEYS.WALK_SIDE, repeat: -1, ignoreIfPlaying: true },
+
+      IDLE_DOWN: { key: PLAYER_ANIMATION_KEYS.IDLE_DOWN, repeat: -1, ignoreIfPlaying: true },
+      IDLE_UP: { key: PLAYER_ANIMATION_KEYS.IDLE_UP, repeat: -1, ignoreIfPlaying: true },
+      IDLE_LEFT: { key: PLAYER_ANIMATION_KEYS.IDLE_SIDE, repeat: -1, ignoreIfPlaying: true },
+      IDLE_RIGHT: { key: PLAYER_ANIMATION_KEYS.IDLE_SIDE, repeat: -1, ignoreIfPlaying: true },
+    };
     super(scene, x, y, assetKey, frame || 0);
 
     scene.add.existing(this);
@@ -34,8 +48,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
     this.#stateMachine = new StateMachine('player');
     this.#stateMachine.addState(new IdleState(this));
     this.#stateMachine.addState(new MoveState(this));
-    this.#stateMachine.setState(CHARACTER_STATES.IDLE_STATE);
     this.#directionComponent = new DirectionComponent(this);
+    this.#animationComponent = new AnimationComponent(this, animationConfig);
+    this.#stateMachine.setState(CHARACTER_STATES.IDLE_STATE);
 
     config.scene.events.on(Phaser.Scenes.Events.UPDATE, this.update, this); // Listen the event emmited in scene Update and excecute this.update()
     config.scene.events.once(
@@ -60,6 +75,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   }
   set direction(direction: Direction) {
     this.#directionComponent.direction = direction;
+  }
+
+  get animationComponent(): AnimationComponent {
+    return this.#animationComponent;
   }
 
   update(): void {
