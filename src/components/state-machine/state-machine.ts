@@ -3,7 +3,7 @@ import { ENABLE_LOGGING } from '../config';
 export interface State {
   stateMachine: StateMachine;
   name: string;
-  onEnter?: (args: unknownp[]) => void;
+  onEnter?: (args: unknown[]) => void;
   onUpdate?: () => void;
 }
 
@@ -52,7 +52,7 @@ export class StateMachine {
     }
 
     this.#isChangingState = true;
-    this.#log(methodName, `change from ${this.#currentState?.name ?? 'none'} to $name}`);
+    this.#log(methodName, `change from ${this.#currentState?.name ?? 'none'} to ${name}`);
     this.#currentState = this.#states.get(name);
 
     if (this.#currentState?.onEnter) {
